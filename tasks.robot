@@ -86,6 +86,7 @@ Submit robot order
 
 Save receipt as PDF
     [Arguments]    ${number}
+    Create Directory    ${OUTPUT_DIR}${/}Receipts
     ${output_path}=    Set Variable    ${OUTPUT_DIR}${/}Receipts${/}Receipt ${number}.pdf
     Wait Until Element Is Visible    receipt
     ${receipt_html}=    Get Element Attribute    receipt    outerHTML
@@ -94,6 +95,7 @@ Save receipt as PDF
 
 Take screenshot of robot
     [Arguments]    ${number}
+    Create Directory    ${OUTPUT_DIR}${/}Robot Previews
     ${output_path}=    Set Variable    ${OUTPUT_DIR}${/}Robot Previews${/}robot-preview ${number}.png
     Wait Until Page Contains Element    robot-preview-image
     Screenshot    robot-preview-image    ${output_path}
@@ -113,6 +115,10 @@ Create ZIP file of receipts
     Archive Folder With Zip    ${OUTPUT_DIR}${/}Receipts    ${zip_file_name}
 
 Clean up step
-    Empty Directory    ${OUTPUT_DIR}${/}Receipts
-    Empty Directory    ${OUTPUT_DIR}${/}Robot Previews
+    ${receipts_folder_path}=    Set Variable    ${OUTPUT_DIR}${/}Receipts
+    ${previews_folder_path}=    Set Variable    ${OUTPUT_DIR}${/}Robot Previews
+    Empty Directory    ${receipts_folder_path}
+    Remove Directory    ${receipts_folder_path}
+    Empty Directory    ${previews_folder_path}
+    Remove Directory    ${previews_folder_path}
     Close Browser
