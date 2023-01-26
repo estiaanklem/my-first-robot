@@ -5,7 +5,7 @@ Documentation       Orders robots from RobotSpareBin Industries Inc.
 ...                 Embeds the screenshot of the robot to the PDF receipt.
 ...                 Creates ZIP archive of the receipts and the images.
 
-Library             RPA.Browser.Selenium    auto_close=${False}
+Library             RPA.Browser.Selenium
 Library             RPA.HTTP
 Library             RPA.PDF
 Library             RPA.Excel.Files
@@ -33,7 +33,8 @@ Order robots from RobotSpareBin Industries
             IF    ${is_receipt_visible}                BREAK
             Sleep    0.5
         END
-        # Wait Until Keyword Succeeds    10x    2 sec    Submit robot order
+        # Wait Until Keyword Succeeds was not working consistently on my machine,
+        # so added while loop above to complete task
         ${pdf}=    Save receipt as PDF    ${row}[Order number]
         ${screenshot}=    Take screenshot of robot    ${row}[Order number]
         Embed robot image in receipt PDF    ${screenshot}    ${pdf}
@@ -117,8 +118,6 @@ Create ZIP file of receipts
 Clean up step
     ${receipts_folder_path}=    Set Variable    ${OUTPUT_DIR}${/}Receipts
     ${previews_folder_path}=    Set Variable    ${OUTPUT_DIR}${/}Robot Previews
-    Empty Directory    ${receipts_folder_path}
-    Remove Directory    ${receipts_folder_path}
-    Empty Directory    ${previews_folder_path}
-    Remove Directory    ${previews_folder_path}
+    Remove Directory    ${receipts_folder_path}    recursive=True
+    Remove Directory    ${previews_folder_path}    recursive=True
     Close Browser
